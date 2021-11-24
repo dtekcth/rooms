@@ -9,7 +9,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-and-push-image:
+  build-and-push-image-frontend:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -32,12 +32,46 @@ jobs:
       id: meta
       uses: docker/metadata-action@v3.6.0
       with:
-        images: ghcr.io/${{ env.IMAGE_NAME }}
+        images: ghcr.io/${{ env.IMAGE_NAME }}-fontend
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v2.7.0
       with:
-        context: .
+        context: frontend
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+
+  build-and-push-image-backend:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # User triggering the action is authenticated to the container registry
+    - name: Log in to the Container registry
+      uses: docker/login-action@v1.10.0
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    # Basically sets the image tag from the release
+    - name: Extract metadata for Docker
+      id: meta
+      uses: docker/metadata-action@v3.6.0
+      with:
+        images: ghcr.io/${{ env.IMAGE_NAME }}-backend
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v2.7.0
+      with:
+        context: backend
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+
