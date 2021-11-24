@@ -42,16 +42,18 @@ export default function Room(props) {
                 <strong>Byggnad: </strong>
                 <p>{props.building ?? "okänt"}</p>
             </li>
+            {props.equipment &&
             <li>
                 <FontAwesomeIcon className="Room-inlineIcon" icon={faChalkboard}/>
                 <strong>Utrustning: </strong>
                 <p>{props.equipment ?? "okänt"}</p>
             </li>
+            }
             {props.comment &&
             <li>
                 <FontAwesomeIcon className="Room-inlineIcon" icon={faCommentAlt}/>
                 <strong>Övrigt: </strong>
-                <p>{props.comments ?? "okänt"}</p>
+                <p>{props.comment ?? "okänt"}</p>
             </li>
             }
             <li>
@@ -80,10 +82,10 @@ export default function Room(props) {
         <span className="Room-timeinfo">
             Ledigt&nbsp;
             {(() => {
-                if (props.startTime - new Date().getTime() < 100000) {
+                if (props.timeslot.start - new Date().getTime() < 100000) {
                     return "nu"
                 } else {
-                    return "från " + new Date(props.startTime).toLocaleTimeString('sv-SE', {
+                    return "från " + new Date(props.timeslot.start).toLocaleTimeString('sv-SE', {
                         hour: '2-digit',
                         minute: "2-digit"
                     });
@@ -92,12 +94,12 @@ export default function Room(props) {
             &nbsp;
             {
                 (() => {
-                    let lastMin = new Date(props.startTime);
+                    const lastMin = new Date(props.timeslot.start);
                     lastMin.setHours(23);
                     lastMin.setMinutes(59);
 
-                    if (props.endTime > lastMin.getTime()) {
-                        if (new Date(props.startTime).getHours() >= 17) {
+                    if (props.timeslot.end > lastMin.getTime()) {
+                        if (new Date(props.timeslot.start).getHours() >= 17) {
                             return "för resten av kvällen."
                         }
                         return "för resten av dagen."
