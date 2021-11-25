@@ -1,11 +1,11 @@
 version: "3.7"
 services:
   backend:
-    build: ./backend/
+    image: ghcr.io/dtekcth/rooms-backend
     ports:
       - "127.0.0.1:8080:8080"
   frontend:
-    build: ./frontend/
+    image: ghcr.io/dtekcth/rooms-frontend 
     ports:
       - "3000:80"
 
