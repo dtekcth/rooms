@@ -1,4 +1,4 @@
-FROM openjdk:17
+FROM eclipse-temurin:17.0.6_10-jdk
 
 # Create app directory
 RUN mkdir -p /usr/app
@@ -9,4 +9,3 @@ COPY . .
 RUN chmod +x gradlew
 RUN ./gradlew
 CMD ./gradlew run
-
